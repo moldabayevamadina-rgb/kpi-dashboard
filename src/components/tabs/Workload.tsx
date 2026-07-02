@@ -36,7 +36,7 @@ export function Workload({ employees }: { employees: Employee[] }) {
       </SectionCard>
 
       <SectionCard title="Реестр загрузки сотрудников" subtitle={`${sorted.length} сотрудников · сортировка по убыванию загрузки`}>
-        <div className="overflow-x-auto">
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[720px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wider text-navy-400">
@@ -75,6 +75,33 @@ export function Workload({ employees }: { employees: Employee[] }) {
             </tbody>
           </table>
         </div>
+
+        <ul className="flex flex-col gap-3 md:hidden">
+          {sorted.map((e) => {
+            const pct = workloadPct(e);
+            const status = workloadStatus(pct);
+            return (
+              <li key={e.id} className="rounded-lg border border-navy-700 bg-navy-800 p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="text-navy-100">{e.name}</div>
+                    <div className="text-xs text-navy-400">
+                      {e.position} · {e.process}
+                    </div>
+                  </div>
+                  <WorkloadStatusPill status={status} />
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <WorkloadBar pct={pct} />
+                  <span className="shrink-0 font-mono text-sm font-semibold text-navy-100">{pct.toFixed(0)}%</span>
+                </div>
+                <div className="mt-1.5 font-mono text-xs text-navy-400">
+                  {e.actualHours} / {e.capacity} ч
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </SectionCard>
     </div>
   );

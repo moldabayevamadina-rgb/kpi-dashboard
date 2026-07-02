@@ -21,13 +21,13 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-navy-950">
       <header className="border-b border-navy-700 bg-navy-900">
-        <div className="mx-auto max-w-[1400px] px-6 py-5">
+        <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold-400">
+            <div className="min-w-0">
+              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-gold-400 sm:text-xs">
                 Управление · Бэк-офис
               </p>
-              <h1 className="font-serif-heading mt-1 text-2xl font-semibold text-navy-100">
+              <h1 className="font-serif-heading mt-1 text-lg font-semibold text-navy-100 sm:text-2xl">
                 Дашборд мониторинга KPI и нагрузки
               </h1>
             </div>
@@ -37,7 +37,7 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
             </div>
           </div>
 
-          <nav className="mt-5 flex flex-wrap gap-1 border-b border-navy-700">
+          <nav className="scrollbar-none -mx-4 mt-4 flex flex-nowrap gap-1 overflow-x-auto border-b border-navy-700 px-4 sm:mx-0 sm:mt-5 sm:flex-wrap sm:overflow-visible sm:px-0">
             {TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = tab.id === activeTab;
@@ -45,7 +45,7 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
                 <button
                   key={tab.id}
                   onClick={() => onTabChange(tab.id)}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 ${
                     isActive
                       ? "border-gold-400 text-gold-300"
                       : "border-transparent text-navy-300 hover:text-navy-100"
@@ -60,9 +60,9 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1400px] px-6 py-6">{children}</main>
+      <main className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 sm:py-6">{children}</main>
 
-      <footer className="mx-auto max-w-[1400px] px-6 py-6 text-center text-xs text-navy-500">
+      <footer className="mx-auto max-w-[1400px] px-4 py-6 text-center text-xs text-navy-500 sm:px-6">
         Данные демонстрационные · Реестр сотрудников — ручное редактирование · v1.0
       </footer>
     </div>

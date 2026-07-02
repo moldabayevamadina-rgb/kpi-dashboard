@@ -53,7 +53,6 @@ export function Overview({ employees }: { employees: Employee[] }) {
   const overdueCount = useMemo(() => employees.reduce((s, e) => s + e.tasksOverdue, 0), [employees]);
 
   const top3 = useMemo(() => topWeeklyRanking(employees, 3), [employees]);
-  const podiumOrder = top3.length === 3 ? [top3[1], top3[0], top3[2]] : top3;
 
   const chartData = useMemo(() => aggregateHistory(weeklyHistory, period), [period]);
 
@@ -98,13 +97,13 @@ export function Overview({ employees }: { employees: Employee[] }) {
         {top3.length < 3 ? (
           <p className="text-sm text-navy-400">Недостаточно данных для формирования рейтинга.</p>
         ) : (
-          <div className="grid grid-cols-3 items-end gap-4">
-            {podiumOrder.map((e) => {
-              const place = top3.indexOf(e) + 1;
+          <div className="grid grid-cols-1 items-end gap-4 sm:grid-cols-3">
+            {top3.map((e, idx) => {
+              const place = idx + 1;
               const config = {
-                1: { icon: Trophy, color: "text-gold-300", border: "border-gold-500/50", h: "pt-2", order: "order-2" },
-                2: { icon: Medal, color: "text-navy-200", border: "border-navy-500/60", h: "pt-6", order: "order-1" },
-                3: { icon: Award, color: "text-[#c08a4a]", border: "border-[#c08a4a]/50", h: "pt-6", order: "order-3" },
+                1: { icon: Trophy, color: "text-gold-300", border: "border-gold-500/50", h: "sm:pt-2", order: "sm:order-2" },
+                2: { icon: Medal, color: "text-navy-200", border: "border-navy-500/60", h: "sm:pt-6", order: "sm:order-1" },
+                3: { icon: Award, color: "text-[#c08a4a]", border: "border-[#c08a4a]/50", h: "sm:pt-6", order: "sm:order-3" },
               }[place]!;
               const Icon = config.icon;
               return (
@@ -160,8 +159,8 @@ export function Overview({ employees }: { employees: Employee[] }) {
             </div>
           }
         >
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={chartData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={240}>
+            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#16264d" />
               <XAxis dataKey="label" tick={{ fill: "#7a8fc4", fontSize: 11 }} axisLine={{ stroke: "#16264d" }} tickLine={false} />
               <YAxis tick={{ fill: "#7a8fc4", fontSize: 11 }} axisLine={{ stroke: "#16264d" }} tickLine={false} unit="%" />
@@ -180,8 +179,8 @@ export function Overview({ employees }: { employees: Employee[] }) {
         </SectionCard>
 
         <SectionCard title="Загрузка по направлениям деятельности" subtitle="Средняя загрузка сотрудников направления">
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={processAggregates} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={processAggregates} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#16264d" />
               <XAxis
                 dataKey="process"

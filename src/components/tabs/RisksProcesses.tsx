@@ -53,7 +53,7 @@ export function RisksProcesses({ employees }: { employees: Employee[] }) {
       </SectionCard>
 
       <SectionCard title="Анализ направлений деятельности" subtitle="Балл направления = Средняя загрузка + Просрочки × 5 (п. 7.5)">
-        <div className="overflow-x-auto">
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[720px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wider text-navy-400">
@@ -95,6 +95,42 @@ export function RisksProcesses({ employees }: { employees: Employee[] }) {
             </tbody>
           </table>
         </div>
+
+        <ul className="flex flex-col gap-3 md:hidden">
+          {processAggregates.map((p) => {
+            const isPriority = optimizationPriority?.process === p.process && p.count > 0;
+            return (
+              <li key={p.process} className="rounded-lg border border-navy-700 bg-navy-800 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-navy-100">{p.process}</span>
+                  {isPriority && (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded border border-gold-500/40 bg-gold-500/10 px-1.5 py-0.5 text-[10px] font-medium text-gold-300">
+                      <Star size={10} /> приоритет
+                    </span>
+                  )}
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <WorkloadBar pct={p.avgLoadPct} />
+                  <span className="shrink-0 font-mono text-sm font-semibold text-navy-100">{p.avgLoadPct.toFixed(0)}%</span>
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-xs">
+                  <div>
+                    <div className="text-navy-400">Сотрудников</div>
+                    <div className="text-navy-200">{p.count}</div>
+                  </div>
+                  <div>
+                    <div className="text-navy-400">Просрочек</div>
+                    <div className={p.overdueCount > 0 ? "text-status-red" : "text-navy-200"}>{p.overdueCount}</div>
+                  </div>
+                  <div>
+                    <div className="text-navy-400">Балл</div>
+                    <div className="font-semibold text-navy-100">{p.optimizationScore.toFixed(1)}</div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </SectionCard>
     </div>
   );

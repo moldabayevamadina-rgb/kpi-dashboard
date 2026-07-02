@@ -60,7 +60,7 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
         </button>
       }
     >
-      <div className="overflow-x-auto">
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[1180px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wider text-navy-400">
@@ -176,10 +176,118 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
             })}
           </tbody>
         </table>
-        {employees.length === 0 && (
-          <p className="py-6 text-center text-sm text-navy-400">Реестр пуст — добавьте сотрудника.</p>
-        )}
       </div>
+
+      <ul className="flex flex-col gap-3 md:hidden">
+        {employees.map((e) => {
+          const pct = workloadPct(e);
+          return (
+            <li key={e.id} className="rounded-lg border border-navy-700 bg-navy-800 p-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 space-y-2">
+                  <input
+                    className={`${inputClass} font-medium`}
+                    value={e.name}
+                    onChange={(ev) => updateField(e.id, { name: ev.target.value })}
+                    placeholder="ФИО"
+                  />
+                  <input
+                    className={inputClass}
+                    value={e.position}
+                    onChange={(ev) => updateField(e.id, { position: ev.target.value })}
+                    placeholder="Должность"
+                  />
+                </div>
+                <button
+                  onClick={() => removeEmployee(e.id)}
+                  className="shrink-0 rounded p-1.5 text-navy-400 hover:bg-status-red/10 hover:text-status-red"
+                  title="Удалить сотрудника"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+
+              <select
+                className={`${inputClass} mt-2`}
+                value={e.process}
+                onChange={(ev) => updateField(e.id, { process: ev.target.value as Process })}
+              >
+                {PROCESSES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <label className="block">
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Норма ч.</span>
+                  <input
+                    type="number"
+                    className={`${inputClass} text-right font-mono`}
+                    value={e.capacity}
+                    onChange={(ev) => updateNumeric(e.id, "capacity", ev.target.value)}
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Факт ч.</span>
+                  <input
+                    type="number"
+                    className={`${inputClass} text-right font-mono`}
+                    value={e.actualHours}
+                    onChange={(ev) => updateNumeric(e.id, "actualHours", ev.target.value)}
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Качество</span>
+                  <input
+                    type="number"
+                    className={`${inputClass} text-right font-mono`}
+                    value={e.quality}
+                    onChange={(ev) => updateNumeric(e.id, "quality", ev.target.value)}
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Назначено</span>
+                  <input
+                    type="number"
+                    className={`${inputClass} text-right font-mono`}
+                    value={e.tasksAssigned}
+                    onChange={(ev) => updateNumeric(e.id, "tasksAssigned", ev.target.value)}
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Выполнено</span>
+                  <input
+                    type="number"
+                    className={`${inputClass} text-right font-mono`}
+                    value={e.tasksCompleted}
+                    onChange={(ev) => updateNumeric(e.id, "tasksCompleted", ev.target.value)}
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Просрочено</span>
+                  <input
+                    type="number"
+                    className={`${inputClass} text-right font-mono`}
+                    value={e.tasksOverdue}
+                    onChange={(ev) => updateNumeric(e.id, "tasksOverdue", ev.target.value)}
+                  />
+                </label>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between border-t border-navy-700 pt-2.5">
+                <WorkloadStatusPill status={workloadStatus(pct)} />
+                <span className="font-mono text-sm font-semibold text-navy-100">KPI {kpiPct(e).toFixed(0)}%</span>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {employees.length === 0 && (
+        <p className="py-6 text-center text-sm text-navy-400">Реестр пуст — добавьте сотрудника.</p>
+      )}
     </SectionCard>
   );
 }
