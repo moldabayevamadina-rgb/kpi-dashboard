@@ -1,0 +1,70 @@
+import type { ReactNode } from "react";
+import { LayoutDashboard, Gauge, TrendingUp, ShieldAlert, Users } from "lucide-react";
+
+export const TABS = [
+  { id: "overview", label: "Обзор", icon: LayoutDashboard },
+  { id: "workload", label: "Нагрузка", icon: Gauge },
+  { id: "productivity", label: "Продуктивность", icon: TrendingUp },
+  { id: "risks", label: "Риски и процессы", icon: ShieldAlert },
+  { id: "registry", label: "Реестр сотрудников", icon: Users },
+] as const;
+
+export type TabId = (typeof TABS)[number]["id"];
+
+interface LayoutProps {
+  activeTab: TabId;
+  onTabChange: (id: TabId) => void;
+  children: ReactNode;
+}
+
+export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
+  return (
+    <div className="min-h-screen bg-navy-950">
+      <header className="border-b border-navy-700 bg-navy-900">
+        <div className="mx-auto max-w-[1400px] px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold-400">
+                Управление · Бэк-офис
+              </p>
+              <h1 className="font-serif-heading mt-1 text-2xl font-semibold text-navy-100">
+                Дашборд мониторинга KPI и нагрузки
+              </h1>
+            </div>
+            <div className="hidden shrink-0 rounded border border-navy-600 bg-navy-800 px-3 py-2 text-right sm:block">
+              <div className="text-[10px] uppercase tracking-wider text-navy-400">Период отчёта</div>
+              <div className="font-mono text-sm text-navy-100">Текущая неделя</div>
+            </div>
+          </div>
+
+          <nav className="mt-5 flex flex-wrap gap-1 border-b border-navy-700">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = tab.id === activeTab;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(tab.id)}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "border-gold-400 text-gold-300"
+                      : "border-transparent text-navy-300 hover:text-navy-100"
+                  }`}
+                >
+                  <Icon size={16} />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-[1400px] px-6 py-6">{children}</main>
+
+      <footer className="mx-auto max-w-[1400px] px-6 py-6 text-center text-xs text-navy-500">
+        Данные демонстрационные · Реестр сотрудников — ручное редактирование · v1.0
+      </footer>
+    </div>
+  );
+}
