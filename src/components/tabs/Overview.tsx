@@ -11,12 +11,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Users, Gauge, TrendingUp, ShieldAlert, Clock, Trophy, Medal, Award } from "lucide-react";
+import { Users, Gauge, ArrowUpCircle, ArrowDownCircle, ShieldAlert, Clock, Trophy, Medal, Award } from "lucide-react";
 import type { Employee, Period } from "../../types";
 import { PROCESSES } from "../../types";
 import {
   aggregateByProcess,
-  kpiPct,
   riskFlags,
   riskReasonText,
   riskSeverityScore,
@@ -83,11 +82,16 @@ export function Overview({ employees }: { employees: Employee[] }) {
     () => (employees.length ? employees.reduce((s, e) => s + workloadPct(e), 0) / employees.length : 0),
     [employees]
   );
-  const avgKpi = useMemo(
-    () => (employees.length ? employees.reduce((s, e) => s + kpiPct(e), 0) / employees.length : 0),
-    [employees]
-  );
   const rankable = useMemo(() => employees.filter((e) => !e.isManager), [employees]);
+
+  const maxWeek = useMemo(
+    () => weeklyHistory.reduce((max, w) => (w.total > max.total ? w : max), weeklyHistory[0]),
+    []
+  );
+  const minWeek = useMemo(
+    () => weeklyHistory.reduce((min, w) => (w.total < min.total ? w : min), weeklyHistory[0]),
+    []
+  );
 
   const riskCount = useMemo(() => rankable.filter((e) => riskFlags(e).length > 0).length, [rankable]);
   const overdueCount = useMemo(() => employees.reduce((s, e) => s + e.tasksOverdue, 0), [employees]);
@@ -111,7 +115,7 @@ export function Overview({ employees }: { employees: Employee[] }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         <StatCard label="Сотрудников" value={String(employees.length)} icon={<Users size={18} />} />
         <StatCard
           label="Средняя загрузка"
@@ -119,7 +123,6 @@ export function Overview({ employees }: { employees: Employee[] }) {
           icon={<Gauge size={18} />}
           tone={avgLoad >= 110 || avgLoad <= 65 ? "warning" : "default"}
         />
-        <StatCard label="Средний KPI" value={`${avgKpi.toFixed(0)}%`} icon={<TrendingUp size={18} />} />
         <StatCard
           label="В зоне риска"
           value={String(riskCount)}
@@ -131,6 +134,18 @@ export function Overview({ employees }: { employees: Employee[] }) {
           value={String(overdueCount)}
           icon={<Clock size={18} />}
           tone={overdueCount > 0 ? "warning" : "default"}
+        />
+        <StatCard
+          label="Макс. заявок за неделю"
+          value={String(maxWeek.total)}
+          hint={maxWeek.label}
+          icon={<ArrowUpCircle size={18} />}
+        />
+        <StatCard
+          label="Мин. заявок за неделю"
+          value={String(minWeek.total)}
+          hint={minWeek.label}
+          icon={<ArrowDownCircle size={18} />}
         />
       </div>
 

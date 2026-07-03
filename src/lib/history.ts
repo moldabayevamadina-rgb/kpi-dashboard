@@ -16,10 +16,12 @@ export function aggregateHistory(history: WeekPoint[], period: Period): WeekPoin
     const slice = history.slice(i, i + size);
     const loadPct = slice.reduce((s, p) => s + p.loadPct, 0) / slice.length;
     const prodPct = slice.reduce((s, p) => s + p.prodPct, 0) / slice.length;
+    const total = slice.reduce((s, p) => s + p.total, 0);
     chunks.push({
       label: CHUNK_LABEL[period](chunks.length),
       loadPct: Math.round(loadPct * 10) / 10,
       prodPct: Math.round(prodPct * 10) / 10,
+      total,
     });
   }
   return chunks;

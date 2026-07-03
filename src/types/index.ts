@@ -25,6 +25,8 @@ export interface WeekPoint {
   label: string;
   loadPct: number;
   prodPct: number;
+  /** Фактическое количество поступивших заявок за неделю (управление в целом) */
+  total: number;
 }
 
 export type Period = "week" | "month" | "quarter";
