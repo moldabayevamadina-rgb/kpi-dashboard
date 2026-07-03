@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { LayoutDashboard, Gauge, TrendingUp, ShieldAlert, Users } from "lucide-react";
+import { LayoutDashboard, Gauge, TrendingUp, ShieldAlert, Users, Landmark } from "lucide-react";
 
 export const TABS = [
   { id: "overview", label: "Обзор", icon: LayoutDashboard },
@@ -31,9 +31,22 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
                 Дашборд мониторинга KPI и нагрузки
               </h1>
             </div>
-            <div className="hidden shrink-0 rounded border border-navy-600 bg-navy-800 px-3 py-2 text-right sm:block">
-              <div className="text-[10px] uppercase tracking-wider text-navy-400">Период данных</div>
-              <div className="font-mono text-sm text-navy-100">1 мая – 2 июля 2026</div>
+            <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+              <div className="hidden rounded border border-navy-600 bg-navy-800 px-3 py-2 text-right md:block">
+                <div className="text-[10px] uppercase tracking-wider text-navy-400">Период данных</div>
+                <div className="font-mono text-sm text-navy-100">1 мая – 2 июля 2026</div>
+              </div>
+              <div className="hidden h-9 w-px bg-navy-700 md:block" />
+              <div className="flex items-center gap-2">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gold-500 text-white">
+                  <Landmark size={20} />
+                </div>
+                <div className="leading-tight">
+                  <div className="text-base font-extrabold tracking-tight text-navy-100 sm:text-lg">
+                    Halyk<span className="text-gold-500">Bank</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

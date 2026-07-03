@@ -12,7 +12,7 @@ export function Sparkline({ values, width = 96, height = 28 }: { values: number[
       <polyline
         points={points}
         fill="none"
-        stroke={trendUp ? "#2e7d5b" : "#c0392b"}
+        stroke={trendUp ? "#00A651" : "#DC2626"}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"

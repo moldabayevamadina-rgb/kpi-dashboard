@@ -34,11 +34,6 @@ export function kpiPct(e: Employee): number {
   return completionRate * 0.6 + e.quality * 0.4;
 }
 
-/** 7.3 Рейтинговый балл периода = KPI% − Возвраты×0.4 + min(Выполнено,30)×0.3 */
-export function weeklyScore(e: Employee): number {
-  return kpiPct(e) - e.tasksOverdue * REWORK_PENALTY_WEIGHT + Math.min(e.tasksCompleted, 30) * 0.3;
-}
-
 /** 7.4 Риск-флаги сотрудника */
 export function riskFlags(e: Employee): RiskFlag[] {
   const flags: RiskFlag[] = [];
@@ -89,8 +84,12 @@ export function topOptimizationPriority(aggregates: ProcessAggregate[]): Process
   return withEmployees.reduce((max, a) => (a.optimizationScore > max.optimizationScore ? a : max));
 }
 
-export function topWeeklyRanking(employees: Employee[], n = 3): Employee[] {
-  return [...employees].sort((a, b) => weeklyScore(b) - weeklyScore(a)).slice(0, n);
+/** Топ-N по количеству обработанных (выполненных) заявок внутри роли (санкционер/исполнитель) */
+export function topByProcessed(employees: Employee[], process: Process, n = 3): Employee[] {
+  return employees
+    .filter((e) => e.process === process)
+    .sort((a, b) => b.tasksCompleted - a.tasksCompleted)
+    .slice(0, n);
 }
 
 /** Вспомогательный балл серьёзности риска — для ранжирования в блоке «Приоритетные риски» */

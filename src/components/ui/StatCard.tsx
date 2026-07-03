@@ -10,7 +10,7 @@ interface StatCardProps {
 
 const TONE_CLASSES: Record<NonNullable<StatCardProps["tone"]>, string> = {
   default: "text-navy-100",
-  warning: "text-gold-300",
+  warning: "text-status-yellow",
   danger: "text-status-red",
 };
 

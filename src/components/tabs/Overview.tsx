@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Users, Gauge, TrendingUp, ShieldAlert, Clock, Trophy, Medal, Award, Sparkles } from "lucide-react";
+import { Users, Gauge, TrendingUp, ShieldAlert, Clock, Trophy, Medal, Award } from "lucide-react";
 import type { Employee, Period } from "../../types";
 import { PROCESSES } from "../../types";
 import {
@@ -20,9 +20,8 @@ import {
   riskFlags,
   riskReasonText,
   riskSeverityScore,
+  topByProcessed,
   topOptimizationPriority,
-  topWeeklyRanking,
-  weeklyScore,
   workloadPct,
   workloadStatus,
 } from "../../lib/calculations";
@@ -36,8 +35,46 @@ const PERIOD_LABEL: Record<Period, string> = { week: "Неделя", month: "М�
 
 const PROCESS_BAR_COLOR = (pct: number) => {
   const status = workloadStatus(pct);
-  return { "Перегрузка": "#c0392b", "На пределе": "#b7862b", "Норма": "#2e7d5b", "Недогрузка": "#2a5aa8" }[status];
+  return { "Перегрузка": "#DC2626", "На пределе": "#D97706", "Норма": "#00A651", "Недогрузка": "#2563EB" }[status];
 };
+
+const RANK_STYLE = [
+  { icon: Trophy, color: "text-[#B8860B]", bg: "bg-[#FDF3D8]" },
+  { icon: Medal, color: "text-navy-400", bg: "bg-navy-800" },
+  { icon: Award, color: "text-[#9A5B2E]", bg: "bg-[#F4E6DA]" },
+];
+
+function RankedList({ title, subtitle, list }: { title: string; subtitle: string; list: Employee[] }) {
+  return (
+    <SectionCard title={title} subtitle={subtitle}>
+      {list.length === 0 ? (
+        <p className="text-sm text-navy-400">Недостаточно данных для формирования рейтинга.</p>
+      ) : (
+        <ul className="flex flex-col gap-2.5">
+          {list.map((e, idx) => {
+            const style = RANK_STYLE[idx];
+            const Icon = style.icon;
+            return (
+              <li key={e.id} className="flex items-center gap-3 rounded-lg border border-navy-700 p-3">
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${style.bg}`}>
+                  <Icon className={style.color} size={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-medium text-navy-100">{e.name}</div>
+                  <div className="truncate text-xs text-navy-400">{e.position}</div>
+                </div>
+                <div className="shrink-0 text-right">
+                  <div className="font-mono text-lg font-semibold text-navy-100">{e.tasksCompleted}</div>
+                  <div className="text-[11px] text-navy-400">заявок · кач-во {e.quality}</div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </SectionCard>
+  );
+}
 
 export function Overview({ employees }: { employees: Employee[] }) {
   const [period, setPeriod] = useState<Period>("week");
@@ -55,7 +92,8 @@ export function Overview({ employees }: { employees: Employee[] }) {
   const riskCount = useMemo(() => rankable.filter((e) => riskFlags(e).length > 0).length, [rankable]);
   const overdueCount = useMemo(() => employees.reduce((s, e) => s + e.tasksOverdue, 0), [employees]);
 
-  const top3 = useMemo(() => topWeeklyRanking(rankable, 3), [rankable]);
+  const topSanctioners = useMemo(() => topByProcessed(rankable, "Санкционер", 3), [rankable]);
+  const topExecutors = useMemo(() => topByProcessed(rankable, "Исполнитель", 3), [rankable]);
 
   const chartData = useMemo(() => aggregateHistory(weeklyHistory, period), [period]);
 
@@ -96,51 +134,18 @@ export function Overview({ employees }: { employees: Employee[] }) {
         />
       </div>
 
-      <SectionCard title="Топ-3 сотрудника периода" subtitle="Ранжирование по рейтинговому баллу за период (п. 7.3) · без учёта руководителя">
-        {top3.length < 3 ? (
-          <p className="text-sm text-navy-400">Недостаточно данных для формирования рейтинга.</p>
-        ) : (
-          <div className="grid grid-cols-1 items-end gap-4 sm:grid-cols-3">
-            {top3.map((e, idx) => {
-              const place = idx + 1;
-              const config = {
-                1: { icon: Trophy, color: "text-gold-300", border: "border-gold-500/50", h: "sm:pt-2", order: "sm:order-2" },
-                2: { icon: Medal, color: "text-navy-200", border: "border-navy-500/60", h: "sm:pt-6", order: "sm:order-1" },
-                3: { icon: Award, color: "text-[#c08a4a]", border: "border-[#c08a4a]/50", h: "sm:pt-6", order: "sm:order-3" },
-              }[place]!;
-              const Icon = config.icon;
-              return (
-                <div
-                  key={e.id}
-                  className={`${config.order} ${config.h} flex flex-col items-center rounded-lg border ${config.border} bg-navy-800 p-4 text-center`}
-                >
-                  <Icon className={config.color} size={28} />
-                  <div className="mt-2 font-mono text-xs text-navy-400">#{place}</div>
-                  <div className="font-serif-heading mt-1 text-base font-semibold text-navy-100">{e.name}</div>
-                  <div className="text-xs text-navy-400">{e.position}</div>
-                  <div className="mt-3 grid w-full grid-cols-3 gap-2 border-t border-navy-700 pt-3 font-mono text-xs">
-                    <div>
-                      <div className="text-navy-400">KPI</div>
-                      <div className="font-semibold text-navy-100">{kpiPct(e).toFixed(0)}%</div>
-                    </div>
-                    <div>
-                      <div className="text-navy-400">Задачи</div>
-                      <div className="font-semibold text-navy-100">{e.tasksCompleted}</div>
-                    </div>
-                    <div>
-                      <div className="text-navy-400">Качество</div>
-                      <div className="font-semibold text-navy-100">{e.quality}</div>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-center gap-1 text-[11px] text-gold-300">
-                    <Sparkles size={12} /> Балл {weeklyScore(e).toFixed(1)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </SectionCard>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <RankedList
+          title="Топ-3 санкционера"
+          subtitle="По количеству обработанных заявок за период · без учёта руководителя"
+          list={topSanctioners}
+        />
+        <RankedList
+          title="Топ-3 исполнителя"
+          subtitle="По количеству обработанных заявок за период · без учёта руководителя"
+          list={topExecutors}
+        />
+      </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <SectionCard
@@ -164,38 +169,38 @@ export function Overview({ employees }: { employees: Employee[] }) {
         >
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#16264d" />
-              <XAxis dataKey="label" tick={{ fill: "#7a8fc4", fontSize: 11 }} axisLine={{ stroke: "#16264d" }} tickLine={false} />
-              <YAxis tick={{ fill: "#7a8fc4", fontSize: 11 }} axisLine={{ stroke: "#16264d" }} tickLine={false} unit="%" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8e5" />
+              <XAxis dataKey="label" tick={{ fill: "#66766d", fontSize: 11 }} axisLine={{ stroke: "#e2e8e5" }} tickLine={false} />
+              <YAxis tick={{ fill: "#66766d", fontSize: 11 }} axisLine={{ stroke: "#e2e8e5" }} tickLine={false} unit="%" />
               <Tooltip
-                contentStyle={{ background: "#101c3a", border: "1px solid #1e3361", borderRadius: 6, fontSize: 12 }}
-                labelStyle={{ color: "#dbe3f4" }}
+                contentStyle={{ background: "#ffffff", border: "1px solid #dbe4de", borderRadius: 6, fontSize: 12 }}
+                labelStyle={{ color: "#16211b" }}
               />
-              <Line type="monotone" dataKey="loadPct" name="Загрузка %" stroke="#d4af37" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="prodPct" name="Продуктивность %" stroke="#4a63a0" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="loadPct" name="Загрузка %" stroke="#00A651" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="prodPct" name="Продуктивность %" stroke="#2563EB" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
           <div className="mt-2 flex gap-4 text-xs text-navy-400">
-            <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-gold-400" /> Загрузка %</span>
-            <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-navy-400" /> Продуктивность %</span>
+            <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-[#00A651]" /> Загрузка %</span>
+            <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-[#2563EB]" /> Продуктивность %</span>
           </div>
         </SectionCard>
 
         <SectionCard title="Загрузка по направлениям деятельности" subtitle="Средняя загрузка сотрудников направления">
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={processAggregates} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#16264d" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8e5" />
               <XAxis
                 dataKey="process"
-                tick={{ fill: "#7a8fc4", fontSize: 12 }}
-                axisLine={{ stroke: "#16264d" }}
+                tick={{ fill: "#66766d", fontSize: 12 }}
+                axisLine={{ stroke: "#e2e8e5" }}
                 tickLine={false}
                 interval={0}
               />
-              <YAxis tick={{ fill: "#7a8fc4", fontSize: 11 }} axisLine={{ stroke: "#16264d" }} tickLine={false} unit="%" />
+              <YAxis tick={{ fill: "#66766d", fontSize: 11 }} axisLine={{ stroke: "#e2e8e5" }} tickLine={false} unit="%" />
               <Tooltip
-                contentStyle={{ background: "#101c3a", border: "1px solid #1e3361", borderRadius: 6, fontSize: 12 }}
-                labelStyle={{ color: "#dbe3f4" }}
+                contentStyle={{ background: "#ffffff", border: "1px solid #dbe4de", borderRadius: 6, fontSize: 12 }}
+                labelStyle={{ color: "#16211b" }}
                 formatter={(v) => [`${Number(v).toFixed(0)}%`, "Средняя загрузка"]}
               />
               <Bar dataKey="avgLoadPct" radius={[4, 4, 0, 0]}>
@@ -235,7 +240,7 @@ export function Overview({ employees }: { employees: Employee[] }) {
             <p className="text-sm text-navy-400">Нет данных.</p>
           ) : (
             <div className="rounded border border-gold-500/40 bg-gold-500/5 p-4">
-              <div className="font-serif-heading text-lg font-semibold text-gold-300">{optimizationPriority.process}</div>
+              <div className="text-lg font-semibold text-gold-300">{optimizationPriority.process}</div>
               <div className="mt-3 grid grid-cols-3 gap-3 font-mono text-sm">
                 <div>
                   <div className="text-xs text-navy-400">Сотрудников</div>
