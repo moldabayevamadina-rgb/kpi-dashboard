@@ -1,4 +1,4 @@
-import type { Employee, Process, RiskFlag, WorkloadStatus } from "../types";
+import type { Employee, OpenQuestion, Process, Project, RiskFlag, WorkloadStatus } from "../types";
 
 /**
  * Порог и вес штрафа за возвраты на доработку откалиброваны под реальный масштаб
@@ -105,4 +105,34 @@ export function riskSeverityScore(e: Employee): number {
 export function avg(nums: number[]): number {
   if (nums.length === 0) return 0;
   return nums.reduce((s, n) => s + n, 0) / nums.length;
+}
+
+/**
+ * Добавляет к загрузке и KPI сотрудника нагрузку от проектов и открытых вопросов
+ * (в усл. ед., эквивалент заявки), назначенных на него. Проекты/вопросы любого
+ * статуса учитываются в общем объёме (assigned/actualHours), а завершённые —
+ * дополнительно в выполненных (completed), аналогично заявкам.
+ */
+export function withCombinedLoad(employees: Employee[], projects: Project[], openQuestions: OpenQuestion[]): Employee[] {
+  return employees.map((e) => {
+    const empProjects = projects.filter((p) => p.executor === e.name);
+    const empQuestions = openQuestions.filter((q) => q.owner === e.name);
+
+    const projectsWeight = empProjects.reduce((s, p) => s + p.weight, 0);
+    const projectsDoneWeight = empProjects.filter((p) => p.status === "Завершён").reduce((s, p) => s + p.weight, 0);
+    const questionsWeight = empQuestions.reduce((s, q) => s + q.weight, 0);
+    const questionsDoneWeight = empQuestions.filter((q) => q.status === "Закрыт").reduce((s, q) => s + q.weight, 0);
+
+    const extraAssigned = projectsWeight + questionsWeight;
+    const extraCompleted = projectsDoneWeight + questionsDoneWeight;
+
+    if (extraAssigned === 0) return e;
+
+    return {
+      ...e,
+      actualHours: e.actualHours + extraAssigned,
+      tasksAssigned: e.tasksAssigned + extraAssigned,
+      tasksCompleted: e.tasksCompleted + extraCompleted,
+    };
+  });
 }

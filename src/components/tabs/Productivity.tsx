@@ -12,7 +12,7 @@ export function Productivity({ employees }: { employees: Employee[] }) {
   );
 
   return (
-    <SectionCard title="Продуктивность сотрудников" subtitle="Сортировка по KPI (убывание)">
+    <SectionCard title="Продуктивность сотрудников" subtitle="KPI с учётом заявок, проектов и открытых вопросов · сортировка по убыванию">
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[820px] border-collapse text-sm">
           <thead>

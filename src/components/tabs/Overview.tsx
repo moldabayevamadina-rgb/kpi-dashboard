@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Users, Gauge, ArrowUpCircle, ArrowDownCircle, ShieldAlert, Clock, Trophy, Medal, Award } from "lucide-react";
+import { Users, Gauge, ArrowUpCircle, ArrowDownCircle, Bot, Clock, Trophy, Medal, Award } from "lucide-react";
 import type { Employee, Period } from "../../types";
 import { PROCESSES } from "../../types";
 import {
@@ -26,6 +26,7 @@ import {
 } from "../../lib/calculations";
 import { weeklyHistory } from "../../data/mockHistory";
 import { restructReasons } from "../../data/restructReasons";
+import { robotStats } from "../../data/robotStats";
 import { aggregateHistory } from "../../lib/history";
 import { StatCard } from "../ui/StatCard";
 import { SectionCard } from "../ui/SectionCard";
@@ -93,7 +94,6 @@ export function Overview({ employees }: { employees: Employee[] }) {
     []
   );
 
-  const riskCount = useMemo(() => rankable.filter((e) => riskFlags(e).length > 0).length, [rankable]);
   const overdueCount = useMemo(() => employees.reduce((s, e) => s + e.tasksOverdue, 0), [employees]);
 
   const topSanctioners = useMemo(() => topByProcessed(rankable, "Санкционер", 3), [rankable]);
@@ -115,19 +115,13 @@ export function Overview({ employees }: { employees: Employee[] }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard label="Сотрудников" value={String(employees.length)} icon={<Users size={18} />} />
         <StatCard
           label="Средняя загрузка"
           value={`${avgLoad.toFixed(0)}%`}
           icon={<Gauge size={18} />}
           tone={avgLoad >= 110 || avgLoad <= 65 ? "warning" : "default"}
-        />
-        <StatCard
-          label="В зоне риска"
-          value={String(riskCount)}
-          icon={<ShieldAlert size={18} />}
-          tone={riskCount > 0 ? "danger" : "default"}
         />
         <StatCard
           label="Возвраты на доработку"
@@ -148,6 +142,45 @@ export function Overview({ employees }: { employees: Employee[] }) {
           icon={<ArrowDownCircle size={18} />}
         />
       </div>
+
+      <SectionCard title="Поток заявок: люди и робот" subtitle="Кто фактически обрабатывает заявки управления за период">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-navy-700 p-3">
+            <div className="text-xs text-navy-400">Всего поступило</div>
+            <div className="font-mono text-2xl font-semibold text-navy-100">{robotStats.totalRequests.toLocaleString("ru-RU")}</div>
+          </div>
+          <div className="rounded-lg border border-navy-700 p-3">
+            <div className="flex items-center gap-1.5 text-xs text-navy-400">
+              <Bot size={14} /> Обработано роботом
+            </div>
+            <div className="font-mono text-2xl font-semibold text-navy-100">
+              {robotStats.robotRequests.toLocaleString("ru-RU")}
+              <span className="ml-1.5 text-sm font-normal text-navy-400">
+                {((robotStats.robotRequests / robotStats.totalRequests) * 100).toFixed(0)}%
+              </span>
+            </div>
+          </div>
+          <div className="rounded-lg border border-navy-700 p-3">
+            <div className="flex items-center gap-1.5 text-xs text-navy-400">
+              <Users size={14} /> Обработано сотрудниками
+            </div>
+            <div className="font-mono text-2xl font-semibold text-navy-100">
+              {robotStats.humanRequests.toLocaleString("ru-RU")}
+              <span className="ml-1.5 text-sm font-normal text-navy-400">
+                {((robotStats.humanRequests / robotStats.totalRequests) * 100).toFixed(0)}%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 flex h-2.5 overflow-hidden rounded-full bg-navy-700">
+          <div className="h-full bg-[#00A651]" style={{ width: `${(robotStats.robotRequests / robotStats.totalRequests) * 100}%` }} />
+          <div className="h-full bg-[#2563EB]" style={{ width: `${(robotStats.humanRequests / robotStats.totalRequests) * 100}%` }} />
+        </div>
+        <div className="mt-2 flex gap-4 text-xs text-navy-400">
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#00A651]" /> Робот</span>
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#2563EB]" /> Сотрудники</span>
+        </div>
+      </SectionCard>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <RankedList

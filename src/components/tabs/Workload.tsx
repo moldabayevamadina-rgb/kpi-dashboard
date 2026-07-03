@@ -22,7 +22,7 @@ export function Workload({ employees }: { employees: Employee[] }) {
     <div className="flex flex-col gap-5">
       <SectionCard
         title="Легенда пороговых значений"
-        subtitle="Загрузка % = Фактический объём заявок / Норма заявок × 100 (п. 7.1)"
+        subtitle="Загрузка % = (Заявки + проекты + открытые вопросы) / Норма × 100 (п. 7.1)"
       >
         <div className="flex flex-wrap gap-4">
           {LEGEND.map((l) => (

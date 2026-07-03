@@ -15,6 +15,14 @@ export interface Employee {
   quality: number;
   /** Руководитель управления — исключается из рейтингов и списков риска, но виден в общих сводках. */
   isManager?: boolean;
+  /** Нет данных табеля дисциплины за период (например, сотрудник покинул управление) */
+  inactive?: boolean;
+  /** Отработано дней за период по табелю дисциплины */
+  daysWorked?: number;
+  /** Опозданий за период по табелю дисциплины */
+  lateCount?: number;
+  /** Ранних уходов за период по табелю дисциплины */
+  earlyLeaveCount?: number;
 }
 
 export type WorkloadStatus = "Перегрузка" | "На пределе" | "Норма" | "Недогрузка";
@@ -43,19 +51,19 @@ export interface OpenQuestion {
   status: OpenQuestionStatus;
   comment: string;
   closedDate: string | null;
+  /** Оценка нагрузки в усл. ед. (эквивалент заявки) — учитывается в загрузке и KPI ответственного */
+  weight: number;
 }
 
-export type IncomingTaskPriority = "Высокий" | "Средний" | "Низкий";
-export type IncomingTaskStatus = "Новая" | "В работе" | "На проверке" | "Выполнено" | "Просрочена";
+export type ProjectStatus = "Открыт" | "В работе" | "На паузе" | "Завершён";
 
-export interface IncomingTask {
+export interface Project {
   id: number;
-  receivedDate: string;
-  task: string;
-  source: string;
-  process: Process;
-  owner: string;
-  priority: IncomingTaskPriority;
+  title: string;
+  executor: string;
+  description: string;
+  status: ProjectStatus;
   dueDate: string;
-  status: IncomingTaskStatus;
+  /** Оценка нагрузки в усл. ед. (эквивалент заявки) — учитывается в загрузке и KPI исполнителя */
+  weight: number;
 }

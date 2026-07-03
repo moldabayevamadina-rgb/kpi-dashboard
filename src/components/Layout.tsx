@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
-import { LayoutDashboard, Gauge, TrendingUp, ShieldAlert, Users, Landmark } from "lucide-react";
+import { LayoutDashboard, Gauge, TrendingUp, ShieldAlert, Users, Landmark, Briefcase, MessagesSquare } from "lucide-react";
 
 export const TABS = [
   { id: "overview", label: "Обзор", icon: LayoutDashboard },
   { id: "workload", label: "Нагрузка", icon: Gauge },
   { id: "productivity", label: "Продуктивность", icon: TrendingUp },
   { id: "risks", label: "Риски и процессы", icon: ShieldAlert },
+  { id: "projects", label: "Проекты", icon: Briefcase },
+  { id: "questions", label: "Открытые вопросы", icon: MessagesSquare },
   { id: "registry", label: "Реестр сотрудников", icon: Users },
 ] as const;
 

@@ -50,7 +50,7 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
   return (
     <SectionCard
       title="Реестр сотрудников"
-      subtitle="Ручной ввод и редактирование — изменения сразу пересчитывают все разделы дашборда"
+      subtitle="Показатели по заявкам (источник для загрузки/KPI) — проекты и открытые вопросы добавляются в разделах «Проекты» и «Открытые вопросы»"
       actions={
         <button
           onClick={addEmployee}
