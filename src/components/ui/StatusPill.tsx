@@ -22,7 +22,7 @@ const RISK_CLASSES: Record<RiskFlag, string> = {
   "Перегрузка": "bg-status-red/15 text-status-red border-status-red/40",
   "Недогрузка": "bg-status-blue/15 text-status-blue border-status-blue/40",
   "Качество": "bg-gold-500/15 text-gold-300 border-gold-500/40",
-  "Просрочки": "bg-status-red/15 text-status-red border-status-red/40",
+  "Возвраты": "bg-status-red/15 text-status-red border-status-red/40",
 };
 
 export function RiskFlagPill({ flag }: { flag: RiskFlag }) {

@@ -27,6 +27,7 @@ import {
   workloadStatus,
 } from "../../lib/calculations";
 import { weeklyHistory } from "../../data/mockHistory";
+import { restructReasons } from "../../data/restructReasons";
 import { aggregateHistory } from "../../lib/history";
 import { StatCard } from "../ui/StatCard";
 import { SectionCard } from "../ui/SectionCard";
@@ -49,20 +50,22 @@ export function Overview({ employees }: { employees: Employee[] }) {
     () => (employees.length ? employees.reduce((s, e) => s + kpiPct(e), 0) / employees.length : 0),
     [employees]
   );
-  const riskCount = useMemo(() => employees.filter((e) => riskFlags(e).length > 0).length, [employees]);
+  const rankable = useMemo(() => employees.filter((e) => !e.isManager), [employees]);
+
+  const riskCount = useMemo(() => rankable.filter((e) => riskFlags(e).length > 0).length, [rankable]);
   const overdueCount = useMemo(() => employees.reduce((s, e) => s + e.tasksOverdue, 0), [employees]);
 
-  const top3 = useMemo(() => topWeeklyRanking(employees, 3), [employees]);
+  const top3 = useMemo(() => topWeeklyRanking(rankable, 3), [rankable]);
 
   const chartData = useMemo(() => aggregateHistory(weeklyHistory, period), [period]);
 
   const priorityRisks = useMemo(
     () =>
-      employees
+      rankable
         .filter((e) => riskFlags(e).length > 0)
         .sort((a, b) => riskSeverityScore(b) - riskSeverityScore(a))
         .slice(0, 5),
-    [employees]
+    [rankable]
   );
 
   const processAggregates = useMemo(() => aggregateByProcess(employees, PROCESSES), [employees]);
@@ -86,14 +89,14 @@ export function Overview({ employees }: { employees: Employee[] }) {
           tone={riskCount > 0 ? "danger" : "default"}
         />
         <StatCard
-          label="Просроченных задач"
+          label="Возвраты на доработку"
           value={String(overdueCount)}
           icon={<Clock size={18} />}
           tone={overdueCount > 0 ? "warning" : "default"}
         />
       </div>
 
-      <SectionCard title="Топ-3 сотрудника недели" subtitle="Ранжирование по недельному рейтинговому баллу (п. 7.3)">
+      <SectionCard title="Топ-3 сотрудника периода" subtitle="Ранжирование по рейтинговому баллу за период (п. 7.3) · без учёта руководителя">
         {top3.length < 3 ? (
           <p className="text-sm text-navy-400">Недостаточно данных для формирования рейтинга.</p>
         ) : (
@@ -184,13 +187,10 @@ export function Overview({ employees }: { employees: Employee[] }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#16264d" />
               <XAxis
                 dataKey="process"
-                tick={{ fill: "#7a8fc4", fontSize: 10 }}
+                tick={{ fill: "#7a8fc4", fontSize: 12 }}
                 axisLine={{ stroke: "#16264d" }}
                 tickLine={false}
                 interval={0}
-                angle={-20}
-                textAnchor="end"
-                height={60}
               />
               <YAxis tick={{ fill: "#7a8fc4", fontSize: 11 }} axisLine={{ stroke: "#16264d" }} tickLine={false} unit="%" />
               <Tooltip
@@ -246,7 +246,7 @@ export function Overview({ employees }: { employees: Employee[] }) {
                   <div className="text-navy-100">{optimizationPriority.avgLoadPct.toFixed(0)}%</div>
                 </div>
                 <div>
-                  <div className="text-xs text-navy-400">Просрочек</div>
+                  <div className="text-xs text-navy-400">Возвратов</div>
                   <div className="text-navy-100">{optimizationPriority.overdueCount}</div>
                 </div>
               </div>
@@ -257,6 +257,22 @@ export function Overview({ employees }: { employees: Employee[] }) {
           )}
         </SectionCard>
       </div>
+
+      <SectionCard title="Причины реструктуризации" subtitle="Доля заявок по типу реструктуризации за период">
+        <ul className="flex flex-col gap-3">
+          {restructReasons.map((r) => (
+            <li key={r.reason} className="flex items-center gap-3">
+              <span className="w-56 shrink-0 truncate text-sm text-navy-200" title={r.reason}>
+                {r.reason}
+              </span>
+              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-navy-700">
+                <div className="h-full rounded-full bg-gold-500" style={{ width: `${r.pct}%` }} />
+              </div>
+              <span className="w-12 shrink-0 text-right font-mono text-sm text-navy-100">{r.pct.toFixed(1)}%</span>
+            </li>
+          ))}
+        </ul>
+      </SectionCard>
     </div>
   );
 }

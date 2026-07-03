@@ -19,7 +19,7 @@ export function Productivity({ employees }: { employees: Employee[] }) {
             <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wider text-navy-400">
               <th className="py-2 pr-3 font-medium">Сотрудник</th>
               <th className="py-2 pr-3 font-medium text-right">Выполнено / Назначено</th>
-              <th className="py-2 pr-3 font-medium text-right">Просрочено</th>
+              <th className="py-2 pr-3 font-medium text-right">Возвраты</th>
               <th className="py-2 pr-3 font-medium text-right">Качество</th>
               <th className="py-2 pr-3 font-medium text-right">KPI %</th>
               <th className="py-2 pr-3 font-medium">Динамика</th>
@@ -82,7 +82,7 @@ export function Productivity({ employees }: { employees: Employee[] }) {
                   </div>
                 </div>
                 <div>
-                  <div className="text-navy-400">Просрочка</div>
+                  <div className="text-navy-400">Возвраты</div>
                   <div className={e.tasksOverdue >= 3 ? "font-semibold text-status-red" : "text-navy-200"}>{e.tasksOverdue}</div>
                 </div>
                 <div>

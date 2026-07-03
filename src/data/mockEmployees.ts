@@ -1,20 +1,26 @@
 import type { Employee } from "../types";
 
+/**
+ * Источник: выгрузка «Заявки управления с 1 мая по 2 июля» — реструктуризация займов
+ * (робот-процесс исключён). Норма (capacity) = средний объём заявок за период
+ * среди рядовых сотрудников (537). У руководителя норма равна её же факту —
+ * её 2-недельный всплеск активности в начале периода не сравнивается с рядовыми
+ * сотрудниками (см. isManager).
+ */
 export const initialEmployees: Employee[] = [
-  { id: 1, name: "Асель Нурланова", position: "Начальник управления", process: "Отчётность", capacity: 168, actualHours: 190, tasksAssigned: 22, tasksCompleted: 20, tasksOverdue: 1, quality: 92 },
-  { id: 2, name: "Дмитрий Ковалёв", position: "Главный специалист", process: "Документооборот", capacity: 168, actualHours: 176, tasksAssigned: 40, tasksCompleted: 37, tasksOverdue: 1, quality: 88 },
-  { id: 3, name: "Гульнара Сатбаева", position: "Ведущий специалист", process: "Кадровое администрирование", capacity: 168, actualHours: 150, tasksAssigned: 35, tasksCompleted: 33, tasksOverdue: 0, quality: 95 },
-  { id: 4, name: "Марат Ахметов", position: "Юрист", process: "Юридическое сопровождение", capacity: 168, actualHours: 205, tasksAssigned: 18, tasksCompleted: 14, tasksOverdue: 4, quality: 76 },
-  { id: 5, name: "Елена Петрова", position: "Специалист по закупкам", process: "Закупки и договоры", capacity: 168, actualHours: 172, tasksAssigned: 26, tasksCompleted: 24, tasksOverdue: 1, quality: 90 },
-  { id: 6, name: "Айгерим Тлеубердиева", position: "Архивариус", process: "Архивное хранение", capacity: 168, actualHours: 98, tasksAssigned: 15, tasksCompleted: 14, tasksOverdue: 0, quality: 91 },
-  { id: 7, name: "Сергей Волков", position: "Специалист", process: "Документооборот", capacity: 168, actualHours: 160, tasksAssigned: 30, tasksCompleted: 27, tasksOverdue: 1, quality: 84 },
-  { id: 8, name: "Жанна Есимова", position: "Ведущий специалист", process: "Кадровое администрирование", capacity: 168, actualHours: 210, tasksAssigned: 28, tasksCompleted: 22, tasksOverdue: 5, quality: 70 },
-  { id: 9, name: "Роман Бондаренко", position: "Юрист", process: "Юридическое сопровождение", capacity: 168, actualHours: 165, tasksAssigned: 20, tasksCompleted: 19, tasksOverdue: 0, quality: 93 },
-  { id: 10, name: "Динара Кабулова", position: "Специалист по закупкам", process: "Закупки и договоры", capacity: 168, actualHours: 178, tasksAssigned: 24, tasksCompleted: 20, tasksOverdue: 3, quality: 79 },
-  { id: 11, name: "Виктор Сидоров", position: "Специалист", process: "Отчётность", capacity: 168, actualHours: 155, tasksAssigned: 19, tasksCompleted: 18, tasksOverdue: 0, quality: 89 },
-  { id: 12, name: "Ляззат Оспанова", position: "Архивариус", process: "Архивное хранение", capacity: 168, actualHours: 105, tasksAssigned: 12, tasksCompleted: 11, tasksOverdue: 0, quality: 87 },
-  { id: 13, name: "Игорь Мельник", position: "Специалист", process: "Документооборот", capacity: 168, actualHours: 140, tasksAssigned: 25, tasksCompleted: 21, tasksOverdue: 2, quality: 81 },
-  { id: 14, name: "Сауле Жумабекова", position: "Специалист по кадрам", process: "Кадровое администрирование", capacity: 168, actualHours: 168, tasksAssigned: 27, tasksCompleted: 26, tasksOverdue: 1, quality: 94 },
-  { id: 15, name: "Павел Кузнецов", position: "Юрист", process: "Юридическое сопровождение", capacity: 168, actualHours: 100, tasksAssigned: 14, tasksCompleted: 13, tasksOverdue: 0, quality: 86 },
-  { id: 16, name: "Ботагоз Рыскулова", position: "Специалист по закупкам", process: "Закупки и договоры", capacity: 168, actualHours: 192, tasksAssigned: 22, tasksCompleted: 16, tasksOverdue: 4, quality: 74 },
+  { id: 1, name: "Мамирова", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 1218, tasksAssigned: 1218, tasksCompleted: 1118, tasksOverdue: 100, quality: 92 },
+  { id: 2, name: "Ажгелдина", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 1139, tasksAssigned: 1139, tasksCompleted: 1125, tasksOverdue: 14, quality: 99 },
+  { id: 3, name: "Молдабаева", position: "Начальник управления", process: "Исполнитель", capacity: 1113, actualHours: 1113, tasksAssigned: 1113, tasksCompleted: 1113, tasksOverdue: 0, quality: 100, isManager: true },
+  { id: 4, name: "Ахунова", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 1094, tasksAssigned: 1094, tasksCompleted: 1085, tasksOverdue: 9, quality: 99 },
+  { id: 5, name: "Нурсеитова", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 678, tasksAssigned: 678, tasksCompleted: 628, tasksOverdue: 50, quality: 93 },
+  { id: 6, name: "Толендиева", position: "Специалист по реструктуризации займов", process: "Исполнитель", capacity: 537, actualHours: 632, tasksAssigned: 632, tasksCompleted: 507, tasksOverdue: 125, quality: 80 },
+  { id: 7, name: "Султан", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 631, tasksAssigned: 631, tasksCompleted: 618, tasksOverdue: 13, quality: 98 },
+  { id: 8, name: "Сейдеков", position: "Специалист по реструктуризации займов", process: "Исполнитель", capacity: 537, actualHours: 548, tasksAssigned: 548, tasksCompleted: 480, tasksOverdue: 68, quality: 88 },
+  { id: 9, name: "Татиева", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 513, tasksAssigned: 513, tasksCompleted: 493, tasksOverdue: 20, quality: 96 },
+  { id: 10, name: "Митанова", position: "Специалист по реструктуризации займов", process: "Исполнитель", capacity: 537, actualHours: 395, tasksAssigned: 395, tasksCompleted: 345, tasksOverdue: 50, quality: 87 },
+  { id: 11, name: "Абдухелилұлы", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 216, tasksAssigned: 216, tasksCompleted: 213, tasksOverdue: 3, quality: 99 },
+  { id: 12, name: "Алдобергенова", position: "Специалист по реструктуризации займов", process: "Исполнитель", capacity: 537, actualHours: 144, tasksAssigned: 144, tasksCompleted: 118, tasksOverdue: 26, quality: 82 },
+  { id: 13, name: "Тюлюгенова", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 131, tasksAssigned: 131, tasksCompleted: 124, tasksOverdue: 7, quality: 95 },
+  { id: 14, name: "Киясова", position: "Специалист по реструктуризации займов", process: "Исполнитель", capacity: 537, actualHours: 93, tasksAssigned: 93, tasksCompleted: 91, tasksOverdue: 2, quality: 98 },
+  { id: 15, name: "Дарибаева", position: "Специалист по реструктуризации займов", process: "Санкционер", capacity: 537, actualHours: 84, tasksAssigned: 84, tasksCompleted: 84, tasksOverdue: 0, quality: 100 },
 ];

@@ -32,8 +32,8 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
               </h1>
             </div>
             <div className="hidden shrink-0 rounded border border-navy-600 bg-navy-800 px-3 py-2 text-right sm:block">
-              <div className="text-[10px] uppercase tracking-wider text-navy-400">Период отчёта</div>
-              <div className="font-mono text-sm text-navy-100">Текущая неделя</div>
+              <div className="text-[10px] uppercase tracking-wider text-navy-400">Период данных</div>
+              <div className="font-mono text-sm text-navy-100">1 мая – 2 июля 2026</div>
             </div>
           </div>
 
@@ -63,7 +63,7 @@ export function Layout({ activeTab, onTabChange, children }: LayoutProps) {
       <main className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 sm:py-6">{children}</main>
 
       <footer className="mx-auto max-w-[1400px] px-4 py-6 text-center text-xs text-navy-500 sm:px-6">
-        Данные демонстрационные · Реестр сотрудников — ручное редактирование · v1.0
+        Данные: выгрузка заявок на реструктуризацию займов, 1 мая – 2 июля 2026 · Реестр сотрудников — ручное редактирование · v1.0
       </footer>
     </div>
   );

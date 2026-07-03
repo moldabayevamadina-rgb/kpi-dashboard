@@ -22,7 +22,7 @@ export function Workload({ employees }: { employees: Employee[] }) {
     <div className="flex flex-col gap-5">
       <SectionCard
         title="Легенда пороговых значений"
-        subtitle="Загрузка % = Фактические часы / Норма часов × 100 (п. 7.1)"
+        subtitle="Загрузка % = Фактический объём заявок / Норма заявок × 100 (п. 7.1)"
       >
         <div className="flex flex-wrap gap-4">
           {LEGEND.map((l) => (
@@ -42,7 +42,7 @@ export function Workload({ employees }: { employees: Employee[] }) {
               <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wider text-navy-400">
                 <th className="py-2 pr-3 font-medium">Сотрудник</th>
                 <th className="py-2 pr-3 font-medium">Направление</th>
-                <th className="py-2 pr-3 font-medium text-right">Факт / Норма</th>
+                <th className="py-2 pr-3 font-medium text-right">Факт / Норма заявок</th>
                 <th className="py-2 pr-3 font-medium">Шкала</th>
                 <th className="py-2 pr-3 font-medium text-right">%</th>
                 <th className="py-2 pr-3 font-medium">Статус</th>
@@ -60,7 +60,7 @@ export function Workload({ employees }: { employees: Employee[] }) {
                     </td>
                     <td className="py-2.5 pr-3 text-navy-300">{e.process}</td>
                     <td className="py-2.5 pr-3 text-right font-mono text-navy-200">
-                      {e.actualHours} / {e.capacity} ч
+                      {e.actualHours} / {e.capacity}
                     </td>
                     <td className="w-40 py-2.5 pr-3">
                       <WorkloadBar pct={pct} />
@@ -96,7 +96,7 @@ export function Workload({ employees }: { employees: Employee[] }) {
                   <span className="shrink-0 font-mono text-sm font-semibold text-navy-100">{pct.toFixed(0)}%</span>
                 </div>
                 <div className="mt-1.5 font-mono text-xs text-navy-400">
-                  {e.actualHours} / {e.capacity} ч
+                  {e.actualHours} / {e.capacity} заявок
                 </div>
               </li>
             );

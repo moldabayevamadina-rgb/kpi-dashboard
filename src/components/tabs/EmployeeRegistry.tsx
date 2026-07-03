@@ -31,9 +31,9 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
     const newEmployee: Employee = {
       id: nextId,
       name: "Новый сотрудник",
-      position: "Специалист",
+      position: "Специалист по реструктуризации займов",
       process: PROCESSES[0],
-      capacity: 168,
+      capacity: 537,
       actualHours: 0,
       tasksAssigned: 0,
       tasksCompleted: 0,
@@ -67,11 +67,11 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
               <th className="py-2 pr-3 font-medium">ФИО</th>
               <th className="py-2 pr-3 font-medium">Должность</th>
               <th className="py-2 pr-3 font-medium">Направление</th>
-              <th className="py-2 pr-3 font-medium text-right">Норма ч.</th>
-              <th className="py-2 pr-3 font-medium text-right">Факт ч.</th>
+              <th className="py-2 pr-3 font-medium text-right">Норма</th>
+              <th className="py-2 pr-3 font-medium text-right">Факт</th>
               <th className="py-2 pr-3 font-medium text-right">Назначено</th>
               <th className="py-2 pr-3 font-medium text-right">Выполнено</th>
-              <th className="py-2 pr-3 font-medium text-right">Просрочено</th>
+              <th className="py-2 pr-3 font-medium text-right">Возвраты</th>
               <th className="py-2 pr-3 font-medium text-right">Качество</th>
               <th className="py-2 pr-3 font-medium text-right">Загрузка</th>
               <th className="py-2 pr-3 font-medium text-right">KPI</th>
@@ -221,7 +221,7 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
 
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <label className="block">
-                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Норма ч.</span>
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Норма</span>
                   <input
                     type="number"
                     className={`${inputClass} text-right font-mono`}
@@ -230,7 +230,7 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
                   />
                 </label>
                 <label className="block">
-                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Факт ч.</span>
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Факт</span>
                   <input
                     type="number"
                     className={`${inputClass} text-right font-mono`}
@@ -266,7 +266,7 @@ export function EmployeeRegistry({ employees, onChange }: EmployeeRegistryProps)
                   />
                 </label>
                 <label className="block">
-                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Просрочено</span>
+                  <span className="mb-1 block text-[10px] uppercase tracking-wide text-navy-400">Возвраты</span>
                   <input
                     type="number"
                     className={`${inputClass} text-right font-mono`}

@@ -1,11 +1,4 @@
-export const PROCESSES = [
-  "Документооборот",
-  "Кадровое администрирование",
-  "Юридическое сопровождение",
-  "Закупки и договоры",
-  "Архивное хранение",
-  "Отчётность",
-] as const;
+export const PROCESSES = ["Исполнитель", "Санкционер"] as const;
 
 export type Process = (typeof PROCESSES)[number];
 
@@ -20,11 +13,13 @@ export interface Employee {
   tasksCompleted: number;
   tasksOverdue: number;
   quality: number;
+  /** Руководитель управления — исключается из рейтингов и списков риска, но виден в общих сводках. */
+  isManager?: boolean;
 }
 
 export type WorkloadStatus = "Перегрузка" | "На пределе" | "Норма" | "Недогрузка";
 
-export type RiskFlag = "Перегрузка" | "Недогрузка" | "Качество" | "Просрочки";
+export type RiskFlag = "Перегрузка" | "Недогрузка" | "Качество" | "Возвраты";
 
 export interface WeekPoint {
   label: string;

@@ -8,7 +8,8 @@ import { RiskFlagPill } from "../ui/StatusPill";
 import { WorkloadBar } from "../ui/WorkloadBar";
 
 export function RisksProcesses({ employees }: { employees: Employee[] }) {
-  const atRisk = useMemo(() => employees.filter((e) => riskFlags(e).length > 0), [employees]);
+  const rankable = useMemo(() => employees.filter((e) => !e.isManager), [employees]);
+  const atRisk = useMemo(() => rankable.filter((e) => riskFlags(e).length > 0), [rankable]);
   const processAggregates = useMemo(() => aggregateByProcess(employees, PROCESSES), [employees]);
   const optimizationPriority = useMemo(() => topOptimizationPriority(processAggregates), [processAggregates]);
 
@@ -16,7 +17,7 @@ export function RisksProcesses({ employees }: { employees: Employee[] }) {
     <div className="flex flex-col gap-5">
       <SectionCard
         title="Сотрудники в зоне риска"
-        subtitle={`${atRisk.length} из ${employees.length} — сработал хотя бы один риск-флаг (п. 7.4)`}
+        subtitle={`${atRisk.length} из ${rankable.length} — сработал хотя бы один риск-флаг (п. 7.4), без учёта руководителя`}
       >
         {atRisk.length === 0 ? (
           <p className="text-sm text-navy-400">Сотрудников в зоне риска не выявлено.</p>
@@ -52,7 +53,7 @@ export function RisksProcesses({ employees }: { employees: Employee[] }) {
         )}
       </SectionCard>
 
-      <SectionCard title="Анализ направлений деятельности" subtitle="Балл направления = Средняя загрузка + Просрочки × 5 (п. 7.5)">
+      <SectionCard title="Анализ направлений деятельности" subtitle="Балл направления = Средняя загрузка + Возвраты × 5 (п. 7.5)">
         <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[720px] border-collapse text-sm">
             <thead>
@@ -61,7 +62,7 @@ export function RisksProcesses({ employees }: { employees: Employee[] }) {
                 <th className="py-2 pr-3 font-medium text-right">Сотрудников</th>
                 <th className="py-2 pr-3 font-medium text-right">Средняя загрузка</th>
                 <th className="py-2 pr-3 font-medium">Шкала</th>
-                <th className="py-2 pr-3 font-medium text-right">Просрочек</th>
+                <th className="py-2 pr-3 font-medium text-right">Возвратов</th>
                 <th className="py-2 pr-3 font-medium text-right">Балл</th>
               </tr>
             </thead>
@@ -119,7 +120,7 @@ export function RisksProcesses({ employees }: { employees: Employee[] }) {
                     <div className="text-navy-200">{p.count}</div>
                   </div>
                   <div>
-                    <div className="text-navy-400">Просрочек</div>
+                    <div className="text-navy-400">Возвратов</div>
                     <div className={p.overdueCount > 0 ? "text-status-red" : "text-navy-200"}>{p.overdueCount}</div>
                   </div>
                   <div>
